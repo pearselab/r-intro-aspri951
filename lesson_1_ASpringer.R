@@ -2,6 +2,8 @@
 ## Exercises ###################################
 ################################################
 
+#please work 
+
 # c - concatenate
 #     - takes two (or more) vector and joins them together
 c(1, 2, 3)
