@@ -21,5 +21,19 @@ for(i in 20:10){
 sort(seq(from = 10, to = 20, by = 2), decreasing = TRUE)
 
 # not a loop, but gives the right answer...
+# new strange, foreign arithmetic operator I've never heard of before: https://en.wikipedia.org/wiki/Modulo_operation
+# In R, %% represents the modulo operator. Hooray.
+
+for (i in 20:10){
+  if i %% 2 <- 0
+  print(i)
+}
+
+# More bracket problems. Closing curly bracket returns error. Why?
+
+for (i in 20:10){
+  if i %% 2 = 0
+  print(i)
+}
 
 
