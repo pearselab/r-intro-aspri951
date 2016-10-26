@@ -32,8 +32,9 @@ for (i in 20:10){
 # More bracket problems. Closing curly bracket returns error. Why?
 
 for (i in 20:10){
-  if i %% 2 = 0
-  print(i)
+  if (i %% 2 == 0){print(i)}
 }
+
+# cannot use <- with %%
 
 
