@@ -39,7 +39,7 @@ for(i in 1:400)
 
 #Write a function giving area of a circle given radius
 area <- function(r){
-  area <- (r^2 * pi)
+  area = (r^2 * pi)
   return(area)
 }
 #Now I can write area(4) and my function will return the area of a circle with radius 4. Function(r) indicates that r is the single ARGUMENT/VARIABLE in the function
@@ -131,11 +131,169 @@ prime <- function(n){
 #Function works, but prints "PRIME" for every single number between n-1 and 2 that does not give remainder 0.
 
 prime <- function(n){
-  if (n ==2){print("PRIME")} else {
+  if (n == 2){print("PRIME")} else {
     for (i in (n-1):2)
       if(n %% i == 0){print("NOT PRIME")
         break} 
   }
 }
 #Does exactly the opposite of what is being asked. Tells when a number is NOT prime.
+
+prime <- function(n){
+  if (n == 2){print("PRIME")} else {
+    for (i in (n-1):2)
+      if(n %% i == 0){print("NOT PRIME")
+        break} 
+      if(n %% i != 0){print("PRIME")}
+  }
+}
+#Needed an operator I didn't know existed: != is NOT EQUAL
+
+
+#4: Write loop printing out numbers 1:20, print "Good: NUMBER" if divisible by 5, "Job: NUMBER" if prime, nothing otherwise
+
+#loop printing 1:20
+for(i in 1:20){
+  print(i)
+}
+
+#print "Good: NUMBER" if divisible by five
+if (i %% 5 == 0){print("Good: NUMBER")}
+
+#Combine first two: 
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")} else {
+    print(i)
+  }
+}
+
+#print "Job: NUMBER" if prime
+if (i == 2){print("Job: NUMBER")} else {
+  for (j in (i-1):2)
+    if(j %% i != 0){print("Job: NUMBER")}
+}
+
+#Combine second and third:
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")} else {
+    print(i)
+  if (i == 2){print("Job: NUMBER")} else {
+       if(j %% i != 0){print("Job: NUMBER")}
+    }
+  }
+}
+#Wrong order
+
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){print("Job: NUMBER")}
+  for (j in (i-1):2)
+    if(j %% i != 0){print("Job: NUMBER")} else {
+      print(i)
+    }
+}
+#This does not workkkk
+
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){print("Job: NUMBER")} else {
+    print(i)
+  }
+}
+#This works except for assigning the rest of the prime numbers
+
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){print("Job: NUMBER")} 
+  for (j in (i-1):2)
+    if (i %% j != 0){print("Job: NUMBER")} else {
+    print(i)
+  }
+}
+#Weird error.
+
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){print("Job: NUMBER")} 
+  for (j in (i-1):2)
+    if (i %% j != 0){print("Job: NUMBER")} else {
+      return(i)
+    }
+}
+#Still a weird error
+
+for(i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")} else {
+    if (i == 2){print("Job: NUMBER")} else {
+      for (j in (i-1):2)
+        if (i %% j != 0){print("Job: NUMBER")} else {
+          return(i)
+        }
+    }
+  }
+}
+#Else statements did not fix anything.
+
+for (i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){ print("Job: NUMBER")} else {
+    for (j in (i-1):2){
+      if (i %% j != 0){print("Job: NUMBER")} else {
+        return(i)
+      }
+    }
+  }
+}
+#Same error despite bracket change.
+
+for (i in 1:20){
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){print("Job: NUMBER")}
+  for (j in (i-1):2){
+    if (i %% j != 0){print("Job: NUMBER")} else {return(i)}
+  }
+}
+#Same error. Apparently due to an NA being created that messes up the equation? 
+#Maybe because prior things changed the values I'm trying to use to characters ("Good: NUMBER")?
+#Maybe calculate the primes first, then fill in the rest?
+
+for (i in 1:20){
+  for (j in (i-1):2){
+    if (i %% j != 0){print("Job: NUMBER")} else {return(i)}
+  }
+  if (i %% 5 == 0){print("Good: NUMBER")}
+  if (i == 2){print("Job: NUMBER")} else {
+    return(i)
+  }
+}
+#Nope, same error.
+
+for (i in 1:20){
+  if (i == 2){print("Job: NUMBER")} 
+  for (j in (i-1):2){
+    if(j %% i != 0){print("Job: NUMBER")} else {
+      return(i)
+    }
+  }
+}
+#Another error
+
+for (i in 1:20){
+  if (i == 2){print("Job: NUMBER")} else {
+    for (j in (i-1):2){
+      if(j %% i != 0){print("Job: NUMBER")} else {
+        return(i)
+      }
+    }
+  }
+}
+#More errors. 
+
+#5: Gompertz curve is y(t) = a*e^(-b*e^(-c*t)); create function calculating y (pop size) given any parameters
+# exp(x) = e^x in R
+
+Gompertz.population <- function(t, a, b, c){
+  y = a*exp(-b*exp(-c*t))
+  return(y)
+}
 
