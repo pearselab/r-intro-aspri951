@@ -283,7 +283,35 @@ paste(diploid(blackred_locus_alleles))
 #also, diploid(blackred_locus_alleles) gives the PERMUTATIONS rather than the COMBINATIONS... not sure why
 binary_fission <- paste(letters, letters)
 quaternary_fission <- paste(letters, letters, letters, letters)
-#Still doesn't make codons, of course, but clones stuff.
+#Still doesn't make codons, of course, but clones stuff like a bacterium.
+
+#read.csv, read.table, write.csv, write.table
+#read.csv: takes a file you have and brings it into your workspace in R. Creates a data frame from a table. 
+#read.table: is identical to read.csv except for what the defaults are set to
+#read.csv has default header = TRUE, while read.table has default header = FALSE
+#write.csv and write.table make an existing matrix or data frame x in R into a file (.csv or .table)
+#the oppositve of read.csv and read.table
+
+#rnorm, pnorm, dnorm, qnorm
+#rnorm: generates a random number from the normal distribution
+# n = how many random numbers you want, defaults set to mean = 0 and SD = 1
+FiveNormalNumbers = rnorm(5)
+#Interestingly, either the random numbers are only drawn once for a named variable (so the vector remains constant)
+#OR it uses a set algorithm so the same five random normal numbers are drawn each time
+#pnorm: the cumulative probability function, the normal probability table from the back of the math textbook! 
+# given a test statistic, it spits out the (sum) probability (right tail) that your data were drawn from the normal curve
+#dnorm: it's the DENSITY FUNCTION for the NORMAL CURVE. Given an X value, it gives you the associated probability
+#DRAWS the normal curve
+normal_curve = dnorm(-5:5)
+plot(normal_curve)
+#ta da! one bell curve. 
+#qnorm: the OPPOSITE of pnorm. Given a probability, it spits out the test statistic associated with that probability. 
+qnorm(0.5)
+#Yields 0 as a result,indicating half the probability lies to the left of 0 in the cumulative function. Correct. 
+
+#runif, rpois
+#draws random numbers from the uniform distribution and poisson distribution. "R UNIF" NOT "RUN IF" DO NOT FORGET THIS
+
 
 
 
