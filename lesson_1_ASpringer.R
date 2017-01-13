@@ -295,14 +295,14 @@ quaternary_fission <- paste(letters, letters, letters, letters)
 #rnorm, pnorm, dnorm, qnorm
 #rnorm: generates a random number from the normal distribution
 # n = how many random numbers you want, defaults set to mean = 0 and SD = 1
-FiveNormalNumbers = rnorm(5)
+FiveNormalNumbers <- rnorm(5)
 #Interestingly, either the random numbers are only drawn once for a named variable (so the vector remains constant)
 #OR it uses a set algorithm so the same five random normal numbers are drawn each time
 #pnorm: the cumulative probability function, the normal probability table from the back of the math textbook! 
 # given a test statistic, it spits out the (sum) probability (right tail) that your data were drawn from the normal curve
 #dnorm: it's the DENSITY FUNCTION for the NORMAL CURVE. Given an X value, it gives you the associated probability
 #DRAWS the normal curve
-normal_curve = dnorm(-5:5)
+normal_curve <- dnorm(-5:5)
 plot(normal_curve)
 #ta da! one bell curve. 
 #qnorm: the OPPOSITE of pnorm. Given a probability, it spits out the test statistic associated with that probability. 
@@ -312,8 +312,41 @@ qnorm(0.5)
 #runif, rpois
 #draws random numbers from the uniform distribution and poisson distribution. "R UNIF" NOT "RUN IF" DO NOT FORGET THIS
 
+#rank: given an input vector, rank returns a vector showing the order of numeric values in the input vector
+#places the rank value of a given number in the vector in the POSITION that number occurs in the input vector
+#ex. if 5 is the 9th number in vector x, and is the 2nd smallest number in that vector, the result of rank will show "2" in the 5th vector position of the output
+#default rank from smallest (1) to largest (n), will use averages if there are several numbers of the same value in a single vector
 
+#sort, rank, order
+#unlike rank, which shows the rank of each number in a vector IN THE POSITION IN WHICH THEY OCCUR, sort REARRANGES the initial values
+#of course, however, sort does not alter the original vector. Must define a new one for that to stick.
+#order does weird stuff that allows you to organize data frames and other sets of data. Apparently tells you HOW to sort data...
+unordered_thing <- c(4, 4, 4, 6, 1)
+#The proper order of this vector (ascending) is (1, 4, 4, 4, 6)
+order(x)
+#This gives 5, 1, 2, 3, 4, which makes NO sense, BUT: 
+ordered_thing <- unordered_thing[order(unordered_thing)]
+#ordered_thing is now the vector 1, 4, 4, 4, 6 as wanted. No explanation as to how. 
 
+#outer: given vectors a and b, creates an array with dimensions  a x b showing some combination of the elements of a & b
+a <- c(1, 2, 3)
+b <- c(4, 5, 6)
+outer (a, b)
+#[,1] [,2] [,3]
+#[1,]    4    5    6
+#[2,]    8   10   12
+#[3,]   12   15   18
+#here, outer creates a matrix of dimensions a x b; the first row is the first element of a * vector b, the second row is the second element of a * vector b, etc.
+#does producty things
+
+#rep: replicates values in a vector or list
+#needs an input of a vector/list, and number of times you want it repeated
+not_enough_cowbell <- ("cowbell")
+rep(not_enough_cowbell, 5)
+#"cowbell" "cowbell" "cowbell" "cowbell" "cowbell"
+#Enough said. 
+
+#rowsum, colsum: calculates the sum of a certain part of a matrix, in other words, the MARGINS
 
 
 
