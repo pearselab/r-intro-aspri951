@@ -432,7 +432,7 @@ pony.table <- (name.pony = c("Vanna", "George", "Heidi"), height.pony = c(15, 13
 #takes 1) a data set, and 2) an EXPRESSION (IN R) you want to use on that data set: with(data, function)
 
 
-
+#Whyyyyyyyyyyyyyy
           
 
 ################################################
