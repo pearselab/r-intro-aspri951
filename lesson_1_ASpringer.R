@@ -346,9 +346,94 @@ rep(not_enough_cowbell, 5)
 #"cowbell" "cowbell" "cowbell" "cowbell" "cowbell"
 #Enough said. 
 
-#rowsum, colsum: calculates the sum of a certain part of a matrix, in other words, the MARGINS
+#rowSums, colSums: calculates the sum of a certain part of a matrix, in other words, the MARGINS
+#NOT THE SAME AS rowsum!!! 
+matrix.a <- matrix(1:2, nrow = 2, ncol = 4)
+#     [,1] [,2] [,3] [,4]
+#[1,]    1    1    1    1
+#[2,]    2    2    2    2
+rowSums(matrix.a)
+#yields [1] 4 8 because 1+1+1+1 = 4, and 2+2+2+2 = 8
+colSums(matrix.a)
+#yields [1] 3 3 3 3
+
+#seq: generates a sequence of numbers based on parameters you choose: from = x, to = y, by = z
+seq(from = 0, to = 66, by = 3)
+#yields the vector: [1]  0  3  6  9 12 15 18 21 24 27 30 33 36 39 42 45 48 51 54 57 60 63 66
+
+#source: reads the file of your choosing and evaluates anything there to evaluate, giving the results in R
+#source(file name)
+
+#which, which.min, which.max
+#which: gives the location (INDEX) of elements in a LOGICAL vector that are TRUE
+horse.colors <- c("bay", "black", "chestnut", "palomino", "perlino", "cremello", "buckskin", "red roan", "grulla")
+eumelanin.content <- c(TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE)
+horse.eumelanin.table <- table(horse.colors, eumelanin.content)
+#SUCH A GREAT TABLE:
+#   eumelanin.content
+#horse.colors  FALSE TRUE
+#   bay          0    1
+#   black        0    1
+#   buckskin     0    1
+#   chestnut     1    0
+#   cremello     1    0
+#   grulla       0    1
+#   palomino     1    0
+#   perlino      0    1
+#   red roan     1    0
+which(eumelanin.content)
+#yields [1] 1 2 5 7 9, indicating the position/location of colors in the vector that express eumelanin
+#does NOT work for NON-LOGICAL VECTORS!
+
+#which.min or which.max: gives the location/position in a vector where the FIRST minimum or maximum occurs (possible that there is more than one value that is min/max)
+lots.of.numbers <- c(4, 6, 3, 76, 34, 51, 7, 76, 234, 56, 567, 1, 9)
+which.min(lots.of.numbers)
+#yields [1] 12 because it's not giving the VALUE of the min, it's giving the LOCATION of the min. 
+#if you want the VALUE of the min/max, use min() or max()
+
+#setdiff: tells you what IS contained in the first set that is NOT contained in the other
+# https://www.safaribooksonline.com/library/view/the-r-book/9780470510247/ch002-sec073.html
+home.barn.breeds <- c("arabian", "miniature", "paint", "arab cross")
+Polly.barn.breeds <- c("Welsh cob", "quarter horse", "appaloosa", "arab cross", "warmblood")
+#What breeds are at the home barn that aren't at Polly's barn?
+setdiff(home.barn.breeds, Polly.barn.breeds)
+#answer? Arabian, mini, and paint.
+#But what breeds are at POLLY'S barn that aren't at the HOME barn?
+setdiff(Polly.barn.breeds, home.barn.breeds)
+#answer? Welsh cob, quarter horse, appy, and warmblood
+
+#intersect: gives the intersection of two sets (elements common to both set A and set B)
+intersect(Polly.barn.breeds, home.barn.breeds)
+#both Polly's barn and the home barn have an arab cross. 
+
+#union: gives the union of two sets (all unique elements from the combination of set A and B)
+Dawn.barn.breeds <- c("holsteiner", "paint", "quarter horse", "arab cross", "percheron", "thoroughbred", "arabian")
+union(Polly.barn.breeds, home.barn.breeds, Dawn.barn.breeds)
+#Nope, won't do the union of three sets. Crappy.
+
+#table: creates a table from a bunch of vectors, lists, data frames, or other strings of data
+pony.frame = data.frame(name = c("Vanna", "George", "Heidi"), height = c(15, 13.2, 12), color = c("grey", "chestnut overo", "palomino"))
+table(pony.frame)
+#Not super for doing stuff with data frames. 
+name.pony <- c("Vanna", "George", "Heidi")
+height.pony <- c(15, 13.2, 12)
+color.pony <- c("grey", "chestnut overo", "palomino")
+table(name.pony, height.pony, color.pony)
+#still not good. 
+pony.table <- (name.pony = c("Vanna", "George", "Heidi"), height.pony = c(15, 13.2, 12), color.pony = c("grey", "chestnut overo", "palomino"))
+#doesn't work at all.
+#So apparently table doesn't make tables, per se. Data frames are the "tables," and tables take strings of stuff and calculate frequency. Screw you, R. 
+# http://www.cyclismo.org/tutorial/R/types.html
+#You can either take a matrix and give it names...
+#OR you can take a max of TWO vectors and use those as the two dimensions of the table. The table will be filled with frequencies of the two
+#The table will ONLY contain numbers, not characters
+
+#with: specifies which data you want to use (say, in a data frame), and then allows you to to do something to it (AVAILIBLE IN R, like MAX
+#takes 1) a data set, and 2) an EXPRESSION (IN R) you want to use on that data set: with(data, function)
 
 
+
+          
 
 ################################################
 ## Bonus exercises #############################
