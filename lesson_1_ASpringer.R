@@ -431,9 +431,21 @@ pony.table <- (name.pony = c("Vanna", "George", "Heidi"), height.pony = c(15, 13
 #with: specifies which data you want to use (say, in a data frame), and then allows you to to do something to it (AVAILIBLE IN R, like MAX
 #takes 1) a data set, and 2) an EXPRESSION (IN R) you want to use on that data set: with(data, function)
 
+#par: set or query graphical parameters
+#allows you to change appearance and display of graphs/plots. Parameters (like color, font, etc.) are set by making them ARGUMENTS of par
+#Things that can be changed in par: 
+#adj: alignment of text. 0 = left-justified, 0.5 = centered, 1 = right-justified
+#ann: axis titles and header: if ann = FALSE, no headers/titles
+#bg: background color of a plot, bg = some color value
+#bty: determines the type of box drawn around a plot (USEFUL FOR EXERCISE?!)
+#cex: magnifies parts of a plot (ex. main title (.main), subtitles, (.sub), etc.)
+#col: plot color (again, can specify particular parts of a plot: col.axis = color of axis titles)
+#crt: rotation of text (ex. for axis titles)
+#family: font type (options are "serif", "sans", and "mono")
+#font: changes type of lettering: 1 = plain, 2 = bold, 3 = italic...
+#etc. 
 
-#Whyyyyyyyyyyyyyy
-          
+
 
 ################################################
 ## Bonus exercises #############################
@@ -451,3 +463,21 @@ good or for evil, in the superlative degree of comparison only."
 
 #Guessing this is Dickens, though I don't know which one.
 #Tale of Two Cities; haven't read it, though my last evolution prof would surely be pleased if I did.
+
+#grep: finds a regular expression
+#arguments for grep: pattern (like "the"), x (the vector of characters you want to search), etc
+
+grep("the", bonus.text)
+#yields [1] 1 BECAUSE it's telling you the POSITION of the element of the vector contains a match. bonus.text is a vector of length one. One element. That one element has a match. 
+
+grepl("the", bonus.text)
+#yields [1] TRUE because instead of the POSITION (like grep), it gives whether or not each element contains a match in true/false form
+
+grep("the", bonus.text, value = TRUE)
+#doesn't help matters because it just returns the ENTIRE phrase (since it's ONE element and that ONE element contains a match)
+
+gregexpr("the", bonus.text)
+#yields [1]  8  34  61  87 118 146 182 210 241 268 407 412 432 459 575
+#Yes. Location of each instance of THE. The occurs starting at character 8, 34, 61, etc.
+length(gregexpr("the", bonus.text))
+
