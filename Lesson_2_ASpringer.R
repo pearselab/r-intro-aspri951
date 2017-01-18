@@ -150,6 +150,7 @@ prime <- function(n){
 #Needed an operator I didn't know existed: != is NOT EQUAL
 
 
+
 #4: Write loop printing out numbers 1:20, print "Good: NUMBER" if divisible by 5, "Job: NUMBER" if prime, nothing otherwise
 
 #loop printing 1:20
@@ -289,6 +290,8 @@ for (i in 1:20){
 }
 #More errors. 
 
+
+
 #5: Gompertz curve is y(t) = a*e^(-b*e^(-c*t)); create function calculating y (pop size) given any parameters
 # exp(x) = e^x in R
 
@@ -297,3 +300,94 @@ Gompertz.population <- function(t, a, b, c){
   return(y)
 }
 
+Gompertz.population(100, 2, 3, 4)
+#returns [1] 2
+Gompertz.population(1000, 2, 3, 4)
+#returns [1] 2
+
+#Why? Because e^(-400) is such a small number apparently R cannot distinguish it from 0
+#And of course 0 * anything = 0, therefore the entire function is a*e^(0) = a*1 = a, and in this case, I set a = 2
+
+Gompertz.population(1, 2, 3, 4)
+#returns [1] 1.893071
+#check: a * stuff = 2 * 0.946 = 1.893..., so 2 is carrying capacity, and we're 94.6% of the way there
+Gompertz.population(100, 2, 3, -4)
+#returns [1] 0
+Gompertz.population(10, 4, -2, -4)
+#returns [1] Inf, negatives for b and c mess stuff up
+
+#so... basically the gompertz curve is a super fussy function
+#also appears that 'a' defines the asymptote, or carrying capacity in this case, of the population
+#thus, I should be using a wayyy bigger a-value to make this less fussy, and positive values for b and c
+
+Gompertz.population(50, 1000, 2, 3)
+#returns [1] 1000
+#So at t = 50, I've already reached max population size
+
+Gompertz.population(5, 1000, 100, 100)
+# returns [1] 1000
+Gompertz.population(5, 1000, 0.1, 0.1)
+#returns [1] 941.1497
+Gompertz.population(5, 1000, 0.1, 5)
+#returns [1] 1000
+Gompertz.population(5, 1000, 5, 0.1)
+#returns [1] 48.18761
+#So both b and c need to be relatively small to be functional, and c should be smaller than b to make a sensible biological model
+
+Gompertz.population(10, 1000, 4, 0.1)
+# returns [1] 229.5768
+#This actually seems like a reasonable model of population growth for some vertebrate population. Anyhow...
+
+
+
+#6: Function to plot Gompertz curve over time
+
+#will need a loop to generate values from curve for time ti to tf: since two values define a range, a for loop
+#will need to use plot, takes values of x and y: plot(x, y)
+#will need Gompertz.population function
+#not sure whether loop then plot, or plot then loop (which is a subset of which?)
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  for (t in ti:tf)
+    plot(y = a*exp(-b*exp(-c*t)))
+}
+#error: argument x is missing. Can fix.
+Gompertz.plot <- function(ti, tf, a, b, c){
+  for (t in ti:tf)
+    plot(x = t, y = a*exp(-b*exp(-c*t)))
+}
+#well poo. Plots a single dot representing t = 10
+for(i in 1:10)
+ plot(x = i, y = i*5)
+#This also gives a single dot representing i = 10
+
+#curve: draws curve corresponding to function over an interval... sounds better
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+    curve(y = a*exp(-b*exp(-c*t)), from = ti, to = tf)
+}
+#error: argument "sexpr" missing
+Gompertz.plot <- function(ti, tf, a, b, c){
+  curve(expr = a*exp(-b*exp(-c*t)), from = ti, to = tf)
+}
+#error: expr must call a function containing x
+Gompertz.plot <- function(ti, tf, a, b, c){
+  Gompertz.expr = a*exp(-b*exp(-c*x))
+  curve(Gompertz.expr, from = ti, to = tf)
+}
+#error: object x not found
+Gompertz.plot <- function(ti, tf, a, b, c){
+  for(x in ti:tf){
+    Gompertz.expr = a*exp(-b*exp(-c*x))
+    curve(Gompertz.expr, from = ti, to = tf)
+  }
+}
+#example from help file:
+curve(x^3 - 3*x, -2, 2)
+#This works. Will try with gompertz function
+Gompertz.plot <- function(ti, tf, a, b, c){
+  curve(a*exp(-b*exp(-c*x)), from = ti, to = tf)
+}
+#Ha! Take that, stupid curve.
+Gompertz.plot(1, 100, 1000, 4, 0.1)
+#very pretty.
