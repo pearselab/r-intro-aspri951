@@ -391,3 +391,17 @@ Gompertz.plot <- function(ti, tf, a, b, c){
 #Ha! Take that, stupid curve.
 Gompertz.plot(1, 100, 1000, 4, 0.1)
 #very pretty.
+
+
+
+#7 Plot line as red if y>a, plot line as blue if y>b
+#So... from messing with this function above, a is the value of the HORIZONTAL ASYMPTOTE. Y should NEVER be greater than A.
+Gompertz.plot <- function(ti, tf, a, b, c){
+  curve(a*exp(-b*exp(-c*x)), from = ti, to = tf, col=333)
+}
+#successfully changes the color of the line to aqua
+Gompertz.plot <- function(ti, tf, a, b, c){
+  curve(a*exp(-b*exp(-c*x)), from = ti, to = tf, if(a*exp(-b*exp(-c*x))>b){
+    col=333})
+}
+#error: object x not found
