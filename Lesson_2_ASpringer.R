@@ -170,6 +170,16 @@ for (i in 1:20){
 #returns error: missing value where TRUE/FALSE needed... because I set things as == 0 in the prime function, not == TRUE...
 #Or maybe it's because it runs into a FALSE and chokes... test without the block that returns FALSE... nope, same error.
 
+for (i in 1:20){
+  prime(i)
+  if(TRUE){
+    print("JOB")
+  }
+}
+#same error.
+#Can prime(i) == TRUE ? Test:
+prime(3) == TRUE
+#Yes, returns TRUE. Therefore, prime(i) == TRUE should be a valid phrase to write? 
 
 
 
