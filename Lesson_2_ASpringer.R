@@ -149,6 +149,28 @@ prime <- function(n){
 }
 #Needed an operator I didn't know existed: != is NOT EQUAL
 
+#Will's comment: more options if you use return(TRUE) etc. rather than print("character"). Can't use a character in a future function. Can use a logical. 
+
+prime <- function(n){
+  if (n == 2){return(TRUE)} else {
+    for (i in (n-1):2)
+      if (n %% i == 0){return(FALSE)
+        break}
+    if (n %% i != 0){return(TRUE)}
+  }
+}
+
+#test function within function:
+
+for (i in 1:20){
+  if (prime(i) == TRUE){
+    print("Job", i)
+  }
+}
+#returns error: missing value where TRUE/FALSE needed... because I set things as == 0 in the prime function, not == TRUE...
+#Or maybe it's because it runs into a FALSE and chokes... test without the block that returns FALSE... nope, same error.
+
+
 
 
 #4: Write loop printing out numbers 1:20, print "Good: NUMBER" if divisible by 5, "Job: NUMBER" if prime, nothing otherwise
@@ -405,3 +427,30 @@ Gompertz.plot <- function(ti, tf, a, b, c){
     col=333})
 }
 #error: object x not found
+
+
+
+#8:
+
+#9: write a function that draws boxes out of *** given a width and height
+
+star.line <- function(w){
+  top.of.box <- rep("*", w)
+  return(top.of.box)
+}
+#works, but has quotations around the asterisks
+
+star.line <- function(w){
+  top.of.box <- "*"
+  return(rep(top.of.box, w))
+}
+#same result. Try using print?
+
+star.line <- function(w){
+  for(i in 1:w){
+    print("*")
+  }
+}
+#prints vertical row of asterisks in quotations
+
+
