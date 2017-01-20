@@ -181,6 +181,23 @@ for (i in 1:20){
 prime(3) == TRUE
 #Yes, returns TRUE. Therefore, prime(i) == TRUE should be a valid phrase to write? 
 
+#Maybe R expects a TRUE where it finds "return". Test:
+prime <- function(n){
+  if (n == 2){TRUE} else {
+    for (i in (n-1):2)
+      if (n %% i == 0){FALSE
+        break}
+    if (n %% i != 0){TRUE}
+  }
+}
+
+for (j in 1:20){
+  prime(j)
+  if(TRUE){
+    print("JOB")
+  }
+}
+#same error.
 
 
 #4: Write loop printing out numbers 1:20, print "Good: NUMBER" if divisible by 5, "Job: NUMBER" if prime, nothing otherwise
