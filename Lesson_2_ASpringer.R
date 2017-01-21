@@ -199,6 +199,47 @@ for (j in 1:20){
 }
 #same error.
 
+prime <- function(n){
+  if (n == 2){return(TRUE)} else {
+    for (i in (n-1):2)
+      if(n %% i == 0){return(FALSE)
+        break} 
+      if(n %% i != 0){return(TRUE)}
+  }
+}
+#This works.
+
+prime <- function(n){
+  if (n == 2){return(TRUE)} else {
+    for (i in (n-1):2){
+      if(n %% i == 0){return(FALSE)
+        break} 
+      if(n %% i != 0){return(TRUE)}
+    }
+  }
+}
+#this does not. Why?
+
+prime <- function(n){
+  if (n == 2){return(TRUE)} else {
+    for (i in (n-1):2){
+      if(n %% i == 0){return(FALSE)
+        break}
+    }
+    for (i in (n-1):2){
+      if(n %% i != 0){return(TRUE)}
+    }
+  }
+}
+#This works... why?!!
+
+for (i in 1:20){
+  if (prime(i) == TRUE){
+    print("JOB")
+  }
+}
+
+
 
 #4: Write loop printing out numbers 1:20, print "Good: NUMBER" if divisible by 5, "Job: NUMBER" if prime, nothing otherwise
 
