@@ -521,4 +521,141 @@ star.line <- function(w){
 }
 #prints vertical row of asterisks in quotations
 
+#Will's comments: try using cat(), \n breaks to a new line
 
+stars <- cat("*", "*")
+#prints two asterisks
+stars
+#returns NULL. Apparently asterisks stand for placeholders within the cat() function? Check:
+length(stars)
+#Yes, vector of length zero. 
+
+stars <- cat("*", "*", "*", \n "*")
+#Error: doesn't like \n
+stars <- cat("*", "*", "*")\n cat("*")
+#Also error, doesn't like \n
+stars <- cat("*", "*", "*", "\n", "*")
+#Ta da.
+stars <- cat("*", "*", "*", "\n", "*", "*")
+#misaligned
+stars <- cat("", "*", "*", "*", "\n", "*", "", "*", "\n", "*", "*", "*")
+#still misaligned
+stars.BOX <- cat("", "*", "*", "*", "\n", "*", "", "", "*", "\n", "*", "*", "*")
+
+star.line <- function(w){
+  top.of.box <- w*cat("*")
+  return(top.of.box)
+}
+#Return isn't working for this
+star.line <- function(w){
+  top.of.box <- cat("*", "*")
+}
+#I now have a) a function in terms of w that b) prints stars. Need to find a way to make # asterisks dependent on w
+
+#better box:
+cat(" ****", "\n", "*  *", "\n", "****")
+#?cat help file: fill = a logic or positive numeric controlling how output is broken into lines. Default FALSE. 
+#if fill = TRUE, then option of using width to control when a hard return is printed
+
+cat("********************", fill = TRUE, width = 5)
+#doesn't work. Help file example: 
+iter <- stats::rpois(1, lambda = 10)
+## print an informative message
+cat("iteration = ", iter <- iter + 1, "\n")
+#can put equations inside cat() that don't print...
+
+star.line <- function(w){
+  singlestar <- "*"
+  top.of.box <- cat(singlestar * w)
+}
+#doesn't like because you can't multiply a star by a number. Only numbers can be multiplied by numbers
+#from intro r 1 assignment:
+rep(not_enough_cowbell, 5)
+#"cowbell" "cowbell" "cowbell" "cowbell" "cowbell"
+#Yes.
+star.line <- function(w){
+  singlestar <- "*"
+  top.of.box <- cat(rep(singlestar, w))
+}
+#printing asterisks as separate characters (with space in between). How to remove space? Paste joins stuff together.
+star.line <- function(w){
+  singlestar <- "*"
+  top.of.box <- cat(paste(rep(singlestar, w)))
+}
+#nope. Try different order:
+star.line <- function(w){
+  singlestar <- "*"
+  top.of.box <- paste(cat(rep(singlestar, w)))
+}
+#still no. Moving on...
+box <- function(w){
+  star <- "*"
+  horizontal.sides.of.box <- cat(rep(star, w), "\n", rep(star, w))
+}
+#top and bottom of box
+box <- function(w){
+  star <- "*"
+  lid.of.box <- rep(star, w)
+  side.of.box <- rep(star, 2)
+  box <- cat("", lid.of.box, "\n", side.of.box, "\n", lid.of.box)
+}
+#Aligned, but need space in box
+box <- function(w){
+  star <- "*"
+  space <- ""
+  lid.of.box <- rep(star, w)
+  inside.of.box <- rep(space, w-2)
+  side.of.box <- c(star, inside.of.box, star)
+  box <- cat("", lid.of.box, "\n", side.of.box, "\n", lid.of.box)
+}
+#Sweet. Make height of box alterable next:
+box <- function(w, h){
+  star <- "*"
+  space <- ""
+  lid.of.box <- rep(star, w)
+  inside.of.box <- rep(space, w-2)
+  side.of.box <- c(star, inside.of.box, star)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, h-2), lid.of.box)
+}
+#good, but need to have returns. 
+box <- function(w, h){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- rep(star, w)
+  inside.of.box <- rep(space, w-2)
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, h-2), lid.of.box)
+}
+#Hell yes. Still need to figure out paste though... use collapse?
+star <- "*"
+stars <-rep(star, 6)
+#stars yields asterisks with quotation marks. Vector of length six. Use paste to make it a vector of length one:
+paste(stars)
+#still has quotations and spaces... use collapse to change separators?
+paste(stars, collapse = TRUE)
+#error... incorrect use of collapse function. Need collapse = "KIND OF SEPARATION" I want NONE, so collapse = ""
+paste(stars, collapse = "")
+#YES.
+
+box <- function(w, h){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, w-2)
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, h-2), lid.of.box)
+}
+#width is wrong. Does cat() put a space between elements? Test: 
+cat(4, 5, 6)
+#Yes it does. Must account for in width:
+box <- function(w, h){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, w-3)
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, h-2), lid.of.box)
+}
