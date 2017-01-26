@@ -659,3 +659,31 @@ box <- function(w, h){
   side.of.box <- c(star, inside.of.box, star, new.line)
   box <- cat("", lid.of.box, "\n", rep(side.of.box, h-2), lid.of.box)
 }
+
+
+
+
+#10: Modify box to put text centered in box:
+
+box <- function(w, h, word){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  phrase <- "word"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  half.inside.of.box <- rep(space, ((w-3-length(phrase))/2))
+  side.of.box <- c(star, half.inside.of.box, phrase, half.inside.of.box, star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, h-2), lid.of.box)
+}
+#makes a box with "word" written in the middle of each line, but kind of close
+
+box <- function(w, h, word){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  word.in.box <- c(star, rep(space, (w-length(word)-4)/2), word, rep(space, (w-length(word)-4)/2), star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+}

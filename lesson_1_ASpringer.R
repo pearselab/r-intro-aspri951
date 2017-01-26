@@ -2,6 +2,9 @@
 ## Exercises ###################################
 ################################################
 
+#ONLINE DICTIONARY:
+# http://www.sr.bham.ac.uk/~ajrs/R/r-function_list.html
+
 #PRE-EXERCISES:
 
 letters[1:5]
@@ -98,7 +101,8 @@ dangerous <- factor(c(1,5))
 #ACTUAL EXERCISES:
 
 
-# c - concatenate
+# c - combine (NOT the same as "concatenate" apparently!)
+#AGAIN, c() is NOT EQUAL to cat() !!!
 #     - takes two (or more) vector and joins them together
 c(1, 2, 3)
 c(c(1,2,3), c(4,5,6))
@@ -340,7 +344,7 @@ outer (a, b)
 #does producty things
 
 #rep: replicates values in a vector or list
-#needs an input of a vector/list, and number of times you want it repeated
+#needs an input of a vector/list, and nu?mber of times you want it repeated
 not_enough_cowbell <- ("cowbell")
 rep(not_enough_cowbell, 5)
 #"cowbell" "cowbell" "cowbell" "cowbell" "cowbell"
