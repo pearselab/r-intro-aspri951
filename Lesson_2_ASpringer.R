@@ -687,3 +687,16 @@ box <- function(w, h, word){
   word.in.box <- c(star, rep(space, (w-length(word)-4)/2), word, rep(space, (w-length(word)-4)/2), star, new.line)
   box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
 }
+#LENGTH OF WORD DOESN'T WORK BECAUSE LENGTH OF WORD = LENGTH OF THE VECTOR WORD = ONE. ALWAYS. 
+#USE NCHAR TO DETERMINE NUMBER OF CHARACTERS IN A CHARACTER VECTOR (WIDTH)
+
+box <- function(w, h, word){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, ceiling(w-nchar(word)-4)/2), star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+}

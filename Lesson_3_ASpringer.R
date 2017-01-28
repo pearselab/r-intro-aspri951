@@ -69,3 +69,7 @@ plot(point.a, point.b, type = "l")
 plot(x = c(point.a[1], point.b[1], y = c(point.a[2], point.b[2])))
 #NONE OF THESE PLOT THINGERS WORKS. WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
 
+plot.line <- function(a, b){
+  plot(c(a[1], b[1]), c(a[2], b[2]), type = "l")
+}
+#better.
