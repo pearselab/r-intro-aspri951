@@ -73,3 +73,145 @@ plot.line <- function(a, b){
   plot(c(a[1], b[1]), c(a[2], b[2]), type = "l")
 }
 #better.
+
+#5) Make a polygon class that stores polygon from point objects
+
+plot.polygon <- function(a, b, ...){
+  plot(c(a[1], b[1], ...), c(a[2], b[2], ...), type = "l")
+}
+#...nope.Test:
+plot( c(3, 5, 8), c(6, 2, 0), type ="l")
+plot(c(5, 8, 3), c(2, 0, 6), type = "l")
+#plot function connects the three points with lines in order: first to second, second to third, but NOT third to first
+#therefore need to repeat the first point at the end of the sequence to make a closed polygon!
+
+plot.polygon <- function(a, b, ...){
+  plot(c(a[1], b[1], ... , a[1]), c(a[2], b[2], ... , a[2]), type = "l")
+}
+
+#problem... no way to make lines not cross. Example:
+plot(c(0, 4, -2, 4, 0), c(0, 2, 1, 3, 0), type = "l")
+
+#6
+#7
+#8
+#9) circle object: take point and radius, store circle
+
+#eqn circle = k + or - sqrt(r^2 - (x-h)^2) where point = (h, k), so h = point[1], k = point[2]
+
+plot.circle <- function(point, radius){
+  for(i in (point[1] - radius):(point[1] + radius)){
+    y.coordinates <- point[2] + (r^2 - (x - point[1])^2)^(1/2)
+  }
+  plot(c((point[1] - radius):(point[1] + radius)), c(y.coordinates)
+}
+#This is foolish. put plot in the for-loop and use i as a whatever placeholder.
+ 
+plot.circle <- function(point, radius){
+  for(i in (point[1] - radius):(point[1] + radius)){
+    y.coordinates = point[2] + (radius^2 - (i - point[1])^2)^(1/2)
+    plot(i, y.coordinates)
+  }
+}
+#WHY WILL THIS ONLY PLOT A SINGLE POINT?! UGHHHHHHH
+
+plot.circle <- function(point, radius){
+  x.coordinates = c((point[1] - radius):(point[1] + radius))
+  for(i in (point[1] - radius):(point[1] + radius)){
+    y <- point[2] + (radius^2 - (i - point[1])^2)^(1/2)
+  }
+  y.coordinates = c(y)
+  return(y.coordinates)
+}
+#more useless code
+
+plot.circle <- function(point, radius){
+  x.coordinates = c((point[1] - radius):(point[1] + radius))
+  y.coordinates = c(point[2] + (radius^2 - (x.coordinates - point[1])^2)^(1/2))
+  return(y.coordinates)
+}
+
+#successfully creted two vectors... NOW can plot the half circle
+
+plot.circle <- function(point, radius){
+  x.coordinates = c((point[1] - radius):(point[1] + radius))
+  y.coordinates = c(point[2] + (radius^2 - (x.coordinates - point[1])^2)^(1/2))
+  plot(x.coordinates, y.coordinates, type = "l")
+}
+#make other half of circle?
+
+plot.circle <- function(point, radius){
+  x.coordinates = c((point[1] - radius):(point[1] + radius))
+  y.coordinates = c(point[2] + (radius^2 - (x.coordinates - point[1])^2)^(1/2))
+  neg.y.coordinates = c(-y.coordinates)
+  total.y.coordinates = c(y.coordinates, neg.y.coordinates)
+  plot(x.coordinates, total.y.coordinates, type = "l")
+}
+#error, x and y lengths differ... doesn't just recycle... poop.
+
+plot.circle <- function(point, radius){
+  x.coordinates = c((point[1] - radius):(point[1] + radius))
+  y.coordinates = c(point[2] + (radius^2 - (x.coordinates - point[1])^2)^(1/2))
+  neg.y.coordinates = c(-y.coordinates)
+  total.y.coordinates = c(y.coordinates, neg.y.coordinates)
+  plot(rep(x.coordinates, 2), total.y.coordinates, type = "l")
+}
+#works, but draws a zig-zag through circle
+
+plot.circle <- function(point, radius){
+  pos.x.coordinates = c(seq((point[1] - radius), (point[1] + radius), by = 0.1))
+  neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = 0.1)
+  total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+  y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+  neg.y.coordinates = c(-y.coordinates)
+  total.y.coordinates = c(y.coordinates, neg.y.coordinates)
+  plot(total.x.coordinates, total.y.coordinates, type = "l")
+}
+#error: wrong sign in "by" argument for neg.x.coordinates. Try - sign?
+
+plot.circle <- function(point, radius){
+  pos.x.coordinates = c(seq((point[1] - radius), (point[1] + radius), by = 0.1))
+  neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = -0.1)
+  total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+  y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+  neg.y.coordinates = c(-y.coordinates)
+  total.y.coordinates = c(y.coordinates, neg.y.coordinates)
+  plot(total.x.coordinates, total.y.coordinates, type = "l")
+}
+#works ONLY for circles centered at the origin BECAUSE you can't just take the negative of y-coordinates. Flips across x-axis... not correct
+
+plot.circle <- function(point, radius){
+  pos.x.coordinates = c(seq((point[1] - radius), (point[1] + radius), by = 0.1))
+  neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = -0.1)
+  total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+  pos.y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+  neg.y.coordinates = c(point[2] - (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+  total.y.coordinates = c(pos.y.coordinates, neg.y.coordinates)
+  plot(total.x.coordinates, total.y.coordinates, type = "l")
+}
+#fixed. Can plot make axes symmetrical? Same scale? asp = 1?
+plot.circle <- function(point, radius){
+  pos.x.coordinates = seq((point[1] - radius), (point[1] + radius), by = 0.1)
+  neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = -0.1)
+  total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+  pos.y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+  neg.y.coordinates = c(point[2] - (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+  total.y.coordinates = c(pos.y.coordinates, neg.y.coordinates)
+  plot(total.x.coordinates, total.y.coordinates, type = "l", asp = 1)
+}
+#score. 
+
+
+
+#10) Write generic area methods for circle & polygon objects
+
+area.circle <- pi*r^2
+
+area.polygon <- function(a, b, ..., n){
+  single.vector.of.points <- c(a, b, ..., n)
+  number.points <- 0.5*(length(single.vector.of.points))
+  for(i in 1:number.points){
+    sum.of.points <- sum(a[1]*b[2]: n-)
+  }
+}
+  1/2*()
