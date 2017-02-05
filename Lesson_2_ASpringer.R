@@ -496,6 +496,63 @@ Gompertz.plot <- function(ti, tf, a, b, c){
 }
 #error: object x not found
 
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  plot(x.coordinates, y.coordinates, type = "l")
+}
+#Ha. Take that, plot function of pure evil.
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  if(y.coordinates < a){
+    plot(x.coordinates, y.coordinates, type = "l")
+  }
+  if(y.coordinates > a){
+    plot(x.coordinates, y.coordinates, type = "l", col = 444)
+  }
+  plot(x.coordinates, y.coordinates, type = "l")
+}
+#NOoooooooooo. Screw loops. 
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  for(i in ti:a){
+    plot(x.coordinates, y.coordinates, type = "l")
+  }
+  for(j in a:tf){
+    plot(x.coordinates, y.coordinates, type = "l", col = 444)
+  }
+}
+#Also doesn't work...
+
+Gompertz.plot(1, 100, 1000, 4, 0.1)
+#par() function in R will tell R NOT to delete whatever was last on a plot
+
+Gompertz.plot.colors <- function(ti, tf, a, b, c){
+  lower.x.coordinates = seq(from = ti, to = a, by = 0.1)
+  lower.y.coordinates = a*exp(-b*exp(-c*lower.x.coordinates))
+  upper.x.coordinates = seq(from = a, to = tf, by = 0.1)
+  upper.y.coordinates = a*exp(-b*exp(-c*upper.x.coordinates))
+  plot(lower.x.coordinates, lower.y.coordinates, type = "l")
+  par(new = TRUE)
+  plot(upper.x.coordinates, upper.y.coordinates, type = "l", col = 444)
+}
+#parameters don't work at all this way if a > tf
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  if(y.coordinates < a){
+    plot(x.coordinates, y.coordinates, type = "l")
+  } else{
+    plot(x.coordinates, y.coordinates, type = "l", col = 444)
+  }
+}
+#Nope.
+
 
 
 #8:
@@ -700,3 +757,197 @@ box <- function(w, h, word){
   word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, ceiling(w-nchar(word)-4)/2), star, new.line)
   box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
 }
+
+#Fix for non-center-able boxes:
+
+box <- function(w, h, word){
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+}
+
+#So. If the word inside the box is even but the width of the box is odd (or vice. versa), then the word cannot be centered.
+#The word can only be truly centered in the box (left-right) if w is even AND word is even OR if w is odd AND word is odd. Edit:
+
+box <- function(w, h, word){
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  if(w %% 2 != 0 & nchar(word) %% 2 == 0 | w %% 2 == 0 & nchar(word) %% 2 != 0){
+    stop("Word inside box and width of box must BOTH be even or BOTH be odd in order to center word in box.")
+  }
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+}
+
+#What the heck is different about & and &&............... I may never understand this
+#Final step: preventing user from making word too big for box
+
+box <- function(w, h, word){
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  if(w %% 2 != 0 & nchar(word) %% 2 == 0 | w %% 2 == 0 & nchar(word) %% 2 != 0){
+    stop("Word inside box and width of box must BOTH be even or BOTH be odd in order to center word in box.")
+  }
+  if(nchar(word) > (w-2)){
+    stop("Word inside of box cannot be greater than the width of the box minus two!")
+  }
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), star, new.line)
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+}
+#Additional problem: if word = w-2, causes an error when calculating the spaces. Can fix.
+
+box <- function(w, h, word){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  small.word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), star, new.line)
+  big.word.in.box <- c(star, word, star, new.line)
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  if(w %% 2 != 0 & nchar(word) %% 2 == 0 | w %% 2 == 0 & nchar(word) %% 2 != 0){
+    stop("Word inside box and width of box must BOTH be even or BOTH be odd in order to center word in box.")
+  }
+  if(nchar(word) > (w-2)){
+    stop("Word inside of box cannot be greater than the width of the box minus two!")
+  }
+  if(nchar(word) == (w-2)){
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), big.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  }
+  box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), small.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+}
+#Problem = ordering? Trying to execute w-nchar(word)-4/2 blah blah in FIRST time it appears?
+
+box <- function(w, h, word){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  if(w %% 2 != 0 & nchar(word) %% 2 == 0 | w %% 2 == 0 & nchar(word) %% 2 != 0){
+    stop("Word inside box and width of box must BOTH be even or BOTH be odd in order to center word in box.")
+  }
+  if(nchar(word) > (w-2)){
+    stop("Word inside of box cannot be greater than the width of the box minus two!")
+  }
+  if(nchar(word) == (w-2)){
+    big.word.in.box <- c(star, word, star, new.line)
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), big.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  } else {
+    small.word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), star, new.line)
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), small.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  }
+}
+#Ordering fixed problem. But new problem: catenate puts spaces between things. Fix using collapse thinger:
+
+box <- function(w, h, word){
+  star <- "*"
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(star, w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  side.of.box <- c(star, inside.of.box, star, new.line)
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  if(w %% 2 != 0 & nchar(word) %% 2 == 0 | w %% 2 == 0 & nchar(word) %% 2 != 0){
+    stop("Word inside box and width of box must BOTH be even or BOTH be odd in order to center word in box.")
+  }
+  if(nchar(word) > (w-2)){
+    stop("Word inside of box cannot be greater than the width of the box minus two!")
+  }
+  if(nchar(word) == (w-2)){
+    big.word.vector <- c(star, word, star)
+    big.word.in.box <- c(paste(big.word.vector, collapse = ""), new.line)
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), big.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  } else {
+    small.word.in.box <- c(star, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), star, new.line)
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), small.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  }
+}
+
+#HA. TAKE THAT, EVIL BOX OF EVIL HORROR!
+
+
+#11) Modify box function to build boxes out of arbitrary text:
+#Will need to split the text into individual components, then can use rep to have it recycle that a given number of times?
+
+word <- "abcd"
+strsplit(word, "")
+
+#makes a list. Don't want a list... can't repeat a list...
+
+letters.stuff <- c("a", "b", "c")
+rep(letters.stuff, length.out = 29)
+#This is helpful, recycles vector elements given number of times...
+
+#unlist() function takes a list and turns it into a vector. Excellent. Combine these things:
+rep(unlist(strsplit(word, "")), 8)
+#oops. Need LENGTH, not # times total vector is repeated...
+rep(unlist(strsplit(word, "")), length.out = 8)
+#sweet.
+
+#Test for side walls of box:
+unlist(strsplit(word, ""))[1]
+#Excellent. Returns "a" only. 
+
+box <- function(line.type, w, h, word){
+  space <- ""
+  new.line <- "\n"
+  lid.of.box <- paste(rep(unlist(strsplit(line.type, "")), length.out = w), collapse = "")
+  inside.of.box <- rep(space, (w-3))
+  edge.of.box <- unlist(strsplit(line.type, ""))[1]
+  side.of.box <- c(edge.of.box, inside.of.box, edge.of.box, new.line)
+  if(h %% 2 == 0){
+    stop("Word inside box cannot be centered. Height of box needs to be an odd integer.")
+  }
+  if(w %% 2 != 0 & nchar(word) %% 2 == 0 | w %% 2 == 0 & nchar(word) %% 2 != 0){
+    stop("Word inside box and width of box must BOTH be even or BOTH be odd in order to center word in box.")
+  }
+  if(nchar(word) > (w-2)){
+    stop("Word inside of box cannot be greater than the width of the box minus two!")
+  }
+  if(nchar(word) == (w-2)){
+    big.word.vector <- c(edge.of.box, word, edge.of.box)
+    big.word.in.box <- c(paste(big.word.vector, collapse = ""), new.line)
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), big.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  } else {
+    small.word.in.box <- c(edge.of.box, rep(space, (w-nchar(word)-4)/2), word, rep(space, (w-nchar(word)-4)/2), edge.of.box, new.line)
+    box <- cat("", lid.of.box, "\n", rep(side.of.box, (h-3)/2), small.word.in.box, rep(side.of.box, (h-3)/2), lid.of.box)
+  }
+}
+
+#What's inside my ex-roommate's box?!
+box("Melbeast ", 29, 17, "vodka")
+#Priceless.
+#Another fun box:
+box("hell yeah ", 39, 17, "What hath science wrought")
