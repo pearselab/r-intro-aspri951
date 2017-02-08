@@ -239,6 +239,27 @@ for (i in 1:20){
   }
 }
 
+#BESTEST PRIME FUNCTION EVER:
+  
+prime <- function(n){
+  if (n < 0){
+    stop("Number must be greater than zero!")
+  }
+  if (n == 1 | n == 2){
+    return(TRUE)
+  } else {
+    for (i in (n-1):2){
+      if (n %% i == 0){
+        return(FALSE)
+      }
+    }
+    for (i in (n-1):2){
+      if (n %% i != 0){
+        return(TRUE)
+      }
+    }
+  }
+}
 
 
 #4: Write loop printing out numbers 1:20, print "Good: NUMBER" if divisible by 5, "Job: NUMBER" if prime, nothing otherwise
@@ -380,6 +401,47 @@ for (i in 1:20){
 }
 #More errors. 
 
+for(i in 1:20){
+  if(i %% 5 == 0){
+    cat("Good:", i, "\n")
+  }
+}
+#This part works...next...
+
+for(i in 1:20){
+  if(i %% 5 == 0){
+    cat("Good:", i, "\n")
+  }
+  if(prime(i) == TRUE){
+    cat("Job:", i, "\n")
+  }
+}
+#evil error
+
+for(i in 1:20){
+  if(prime(i) == TRUE){
+    cat("Job:", i, "\n")
+  }
+}
+#also error. Argument of length zero. What?
+#internet says the actual value of prime(i) is null, which makes R flip out
+#WEll, perhaps it's because the prime function isn't in the console...
+
+#TEst:
+if(prime(5) == TRUE){print("life sucks")}
+#[1] "life sucks"
+prime(1)
+#Error in if (n%%i == 0) { : missing value where TRUE/FALSE needed
+#So my prime function doesn't handle the number one. problem. 
+
+for(i in 1:20){
+  if(i %% 5 == 0){
+    cat("Good:", i, "\n")
+  }
+  if(prime(i) == TRUE)
+    cat("Job:", i, "\n")
+}
+#Oh well look... now that my function handles the number one, everything works... well then.
 
 
 #5: Gompertz curve is y(t) = a*e^(-b*e^(-c*t)); create function calculating y (pop size) given any parameters
@@ -543,15 +605,69 @@ Gompertz.plot.colors <- function(ti, tf, a, b, c){
 #parameters don't work at all this way if a > tf
 
 Gompertz.plot <- function(ti, tf, a, b, c){
+  colvals <- rep("NA", (tf-ti))
   x.coordinates = seq(from = ti, to = tf, by = 0.1)
   y.coordinates = a*exp(-b*exp(-c*x.coordinates))
   if(y.coordinates < a){
-    plot(x.coordinates, y.coordinates, type = "l")
+    plot(x.coordinates, 
+         y.coordinates,
+         type = "l")
   } else{
-    plot(x.coordinates, y.coordinates, type = "l", col = 444)
+    plot(x.coordinates, 
+         y.coordinates, 
+         type = "l", 
+         lty = 2,
+         col = 444)
   }
 }
 #Nope.
+
+#MAL'S SUGGESTION: USE VECTOR FOR COLOR, SO INSTEAD OF CALLING A SINGLE COLOR, YOU'RE CALLING A VECTOR THAT ASSIGNS A COLOR TO EACH POINT
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  color.vector <- c(rep("future color", (tf-ti)))
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  for(i in y.coordinates){
+    if(i > 5){
+      print("yaya")
+    }
+  }
+  plot(x.coordinates, y.coordinates, type = "l")
+}
+#works, surprisingly. Replace with color. 
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  color.vector <- c(rep("future color", (tf-ti)))
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  for(i in y.coordinates){
+    if(i > a){
+      color.vector[i] == "blue"
+    } else {
+      color.vector[i] == "black"
+    }
+  }
+  plot(x.coordinates, y.coordinates, type = "l", col = color.vector)
+}
+#error: invalid color name 'future color'
+#this would be because the plot function is outside the for-loop and therefore doesn't know the color vector changed
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  color.vector <- c(rep("future color", (tf-ti)))
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  for(i in y.coordinates){
+    if(i > a){
+      color.vector[i] == "blue"
+    } else {
+      color.vector[i] == "black"
+    }
+    plot(x.coordinates, y.coordinates, type = "l", col = color.vector)
+  }
+}
+#Nope.
+
 
 
 

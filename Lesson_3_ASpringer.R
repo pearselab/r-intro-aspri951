@@ -298,6 +298,41 @@ new.polygon <- function(first.point, second.point, ...){
 #Reason why: class(args(new.polygon)) = FUNCTION. The class is FUNCTION. NOT point. 
 #How to call a given argument in a function?
 
+new.polygon <- function(first.point, second.point, ...){
+  if(!inherits(first.point, "point") | !inherits(second.point, "point") | ...){
+    stop("At least one object is not a point.")
+  }
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+#nope, still doesn't work...
+
+new.polygon <- function(first.point, second.point, ...){
+  if(any(mapply(first.point, second.point, ..., class)) != "point"){
+    stop("At least one object is not a point.")
+  }
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+
+#Nope.
+
+new.polygon <- function(first.point, second.point, ...){
+  if(!inherits(first.point, "point") | !inherits(second.point, "point")){
+    stop("At least one object is not a point.")
+  }
+  if(any(sapply(..., class)) != "point"){
+    stop("At least one object is not a point.")
+  }
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+
+
+
 
 #6
 #7
