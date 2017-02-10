@@ -668,6 +668,36 @@ Gompertz.plot <- function(ti, tf, a, b, c){
 }
 #Nope.
 
+#Lines() function to add line to plot with points in it?!
+#Test:
+test.plot <- plot(c(2, 4, 6), c(6, 8, 12))
+lines(c(2, 4, 6), c(6, 8, 12))
+points(4, 10)
+#cool
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  plot(x.coordinates[1:which(y.coordinates == a)], y.coordinates[1: which(y.coordinates == a)], type = "l")
+  lines(x.coordinates[which(y.coordinates == a):length(x.coordinates)], y.coordinates[which(y.coordinates == a):length(y.coordinates)], col = "blue")
+}
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  plot(x.coordinates[1:max(which(y.coordinates < a))], y.coordinates[1: max(which(y.coordinates < a))], type = "l")
+  lines(x.coordinates[max(which(y.coordinates < a)):length(x.coordinates)], y.coordinates[max(which(y.coordinates < a)):length(y.coordinates)], col = "blue")
+}
+#actually works, test:
+Gompertz.plot(1, 80, 100, 10, 12)
+
+Gompertz.plot <- function(ti, tf, a, b, c){
+  x.coordinates = seq(from = ti, to = tf, by = 0.1)
+  y.coordinates = a*exp(-b*exp(-c*x.coordinates))
+  plot(x.coordinates[1:max(which(y.coordinates < b))], y.coordinates[1: max(which(y.coordinates < b))], type = "l")
+  lines(x.coordinates[max(which(y.coordinates < b)):max(which(y.coordinates < a))], y.coordinates[max(which(y.coordinates < b)):max(which(y.coordinates < a))], col = "red")
+  lines(x.coordinates[max(which(y.coordinates < a)):length(x.coordinates)], y.coordinates[max(which(y.coordinates < a)):length(y.coordinates)], col = "blue")
+}
 
 
 
@@ -1067,3 +1097,290 @@ box("Melbeast ", 29, 17, "vodka")
 #Priceless.
 #Another fun box:
 box("hell yeah ", 39, 17, "What hath science wrought")
+
+
+
+
+#12) Hurdle models first decide if a species is present (yes/no), and if so, decide their abundance level (how many)
+#Write a function that models if a species (ONE species) is present at any of n sites, and if so, how many are there
+#use bernoulli determine presence (0,1, user chosen probability of 1 (like coin flip)), and poisson for abundance (user-chosen lambda)
+#Want output of abundance at each site (so, prob of presence multiplied by abundance value?)
+
+#First, make vector of binomial values 
+#Second, make vector of poisson values
+#Third, multiply vectors together and return
+
+#rbinom: takes (number of "coin flips", number of outcomes/sides to coin, probability of landing on a side of coin)
+rbinom(10, 2, .5)
+#returns [1] 1 2 2 1 1 2 1 1 0 2
+
+#rpois: takes n, lambda (number of trials, mean value of distribution)
+
+hurdle.model <- function(numb.sites, prob.presence, expected.abundance){
+  if(prob.presence > 1 | prob.presence < 0){
+    stop("Probabilities must have a value between 0 and 1")
+  }
+  presence <- rbinom(numb.sites, 1, prob.presence)
+  abundance <- rpois(numb.sites, expected.abundance)
+  adjusted.abundance <- (presence * abundance)
+  return(adjusted.abundance)
+}
+
+#Test:
+hurdle.model(10, 0.5, 50)
+hurdle.model(10, 12, 50)
+
+#13) Write a hurdle model that simulates lots of of species with their own p and lambda on n sites
+#return results in a matrix with species as columns, sites as rows
+
+#User should define each lambda and p. Can they input a vector for each? Then use apply?
+#Matrix calls rows, columns, by matrix[row, col]
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  for(i in 1:length(numb.sites)){
+    if(any(prob.presence[i] > 1) | any(prob.presence[i] < 0)){
+      stop("Probabilities must have a value between 0 and 1")
+    }
+  }
+  if(length(species) != length(prob.presence) | length(species) != length(expected.abundance)){
+    stop("There must be a probability of presence and expected abundance for each species")
+  }
+  abundance.matrix <- matrix(nrow = length(numb.sites), ncol = length(species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence)
+    abundance <- rpois(numb.sites, expected.abundance)
+    adjusted.abundance <- (presence * abundance)
+    abundance.matrix[, i] <- c(adjusted.abundance)
+  }
+  return(abundance.matrix)
+}
+
+#Test: 
+hurdle.model.expanded(4, c("boba", "jil", "yef"), c(0.5, 0.9, 0.1), c(10, 50, 100))
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  for(i in 1:length(numb.sites)){
+    if(any(prob.presence[i] > 1) | any(prob.presence[i] < 0)){
+      stop("Probabilities must have a value between 0 and 1")
+    }
+  }
+  if(length(species) != length(prob.presence) | length(species) != length(expected.abundance)){
+    stop("There must be a probability of presence and expected abundance for each species")
+  }
+  abundance.matrix <- matrix(nrow = length(numb.sites), ncol = length(species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence)
+    abundance <- rpois(numb.sites, expected.abundance)
+    adjusted.abundance <- (presence * abundance)
+    for(j in 1:length(numb.sites)){
+      abundance.matrix[j, i] <- adjusted.abundance[j]
+    }
+  }
+  return(abundance.matrix)
+}
+#partially works...
+#Why does it stop?
+#matrix test:
+
+matrix.test <- matrix(nrow = 4, ncol = 6)
+#[,1] [,2] [,3] [,4] [,5] [,6]
+#[1,]   NA   NA   NA   NA   NA   NA
+#[2,]   NA   NA   NA   NA   NA   NA
+#[3,]   NA   NA   NA   NA   NA   NA
+#[4,]   NA   NA   NA   NA   NA   NA
+
+vector.test <- c(4, 5, 6, 1, 3, 5)
+matrix.test[3, ] <- vector.test
+#[,1] [,2] [,3] [,4] [,5] [,6]
+#[1,]   NA   NA   NA   NA   NA   NA
+#[2,]   NA   NA   NA   NA   NA   NA
+#[3,]    4    5    6    1    3    5
+#[4,]   NA   NA   NA   NA   NA   NA
+
+#This works, so second for loop shouldn't be necessary.
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  abundance.matrix <- matrix(nrow = length(numb.sites), ncol = length(species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence)
+    abundance <- rpois(numb.sites, expected.abundance)
+    adjusted.abundance <- (presence * abundance)
+  }
+  return(abundance.matrix)
+}
+#problem: I don't reference WHICH element of vectors prob.presence, expected.abundance to use each iteration of for-loop
+#rbinom can't handle vectors:
+test.prob.vector <- c(0.5, 0.9, 0.3, 0.1)
+> rbinom(3, 1, test.prob.vector)
+#[1] 0 1 1
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  abundance.matrix <- matrix(nrow = length(numb.sites), ncol = length(species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence[i])
+    abundance <- rpois(numb.sites, expected.abundance[i])
+    adjusted.abundance <- (presence * abundance)
+    print(adjusted.abundance)
+  }
+}
+
+hurdle.model.expanded(4, c("boba", "jil", "yef"), c(0.5, 0.9, 0.1), c(10, 50, 100))
+#Ok. So my adjusted.abundance vectors are correct. Just need to get them into the matrix. 
+
+test.matrix <- matrix(nrow = 4, ncol = 3)
+#[,1] [,2] [,3]
+#[1,]   NA   NA   NA
+#[2,]   NA   NA   NA
+#[3,]   NA   NA   NA
+#[4,]   NA   NA   NA
+test.vector <- c(46, 62, 56, 48)
+test.matrix[,2] <- test.vector
+test.matrix
+#[,1] [,2] [,3]
+#[1,]   NA   46   NA
+#[2,]   NA   62   NA
+#[3,]   NA   56   NA
+#[4,]   NA   48   NA
+
+#This notation also works, so...
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  abundance.matrix <- matrix(nrow = length(numb.sites), ncol = length(species))
+  print(abundance.matrix)
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence[i])
+    abundance <- rpois(numb.sites, expected.abundance[i])
+    adjusted.abundance <- (presence * abundance)
+    abundance.matrix[, i] <- adjusted.abundance
+    print(adjusted.abundance)
+  }
+}
+#Nope. Error: number of items to replace is not a multiple of replacement length
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  abundance.matrix <- matrix(nrow = length(numb.sites), ncol = length(species))
+  print(abundance.matrix)
+  print(dim(abundance.matrix))
+  print(length(numb.sites))
+  print(length(species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence[i])
+    abundance <- rpois(numb.sites, expected.abundance[i])
+    adjusted.abundance <- (presence * abundance)
+  }
+}
+#Problem... this is the abundance matrix:
+#[,1] [,2] [,3]
+#[1,]   NA   NA   NA
+
+#Problem solved. length(numb.sites) is ONE because that's a NUMBER. A SINGLE NUMBER. Not a vector of numbers...
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  abundance.matrix <- matrix(nrow = numb.sites, ncol = length(species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence[i])
+    abundance <- rpois(numb.sites, expected.abundance[i])
+    adjusted.abundance <- (presence * abundance)
+    abundance.matrix[, i] <- adjusted.abundance
+  }
+  return(abundance.matrix)
+}
+
+#Test:
+hurdle.model.expanded(4, c("boba", "jil", "yef"), c(0.5, 0.9, 0.1), c(10, 50, 100))
+#Oh yes it does. 
+#Final version:
+
+hurdle.model.expanded <- function(numb.sites, species, prob.presence, expected.abundance){
+  for(i in 1:length(numb.sites)){
+    if(any(prob.presence[i] > 1) | any(prob.presence[i] < 0)){
+      stop("Probabilities must have a value between 0 and 1")
+    }
+  }
+  if(length(species) != length(prob.presence) | length(species) != length(expected.abundance)){
+    stop("There must be a probability of presence and expected abundance for each species")
+  }
+  abundance.matrix <- matrix(nrow = numb.sites, ncol = length(species), dimnames = list(1:numb.sites, species))
+  for(i in 1:length(species)){
+    presence <- rbinom(numb.sites, 1, prob.presence[i])
+    abundance <- rpois(numb.sites, expected.abundance[i])
+    adjusted.abundance <- (presence * abundance)
+    abundance.matrix[, i] <- adjusted.abundance
+  }
+  return(abundance.matrix)
+}
+
+
+#14) Progress through time, professor moves a random, normally-distributed distance N-S and E-W every five minutes.
+#Simulate process 100 times and plot. 
+
+#I will assume professor starts at point (0,0)
+#Next time-step: professor moves rnorm(1, mean, SD) to left-right, and rnorm(1, mean, SD) up-down
+#So the point for the next time step is (0 + rnorm(blah), 0 + rnorm(blah))
+#more generally, for time step t, the position is (x(t-1) + rnorm(blah), y(t-1) + rnorm(blah))
+#recursive
+
+#I will want mean 0 for distribution (so equal prob of moving left OR right), and may as well use SD = 1 or 2 or something
+
+random.walk <- plot(0, 0)
+start.point <- c(0,0)
+for(i in 1:100){
+  start.point <- start.point + c(rnorm(1, 0, 2), rnorm(1, 0, 2))
+  print(start.point)
+  points(start.point[1], start.point[2])
+}
+
+#appears to print correctly, just won't plot yet
+#nevermind, plots too, just off screen (size of plot too small)
+#change graphical parameters.xlim and ylim?
+
+
+random.walk <- plot(0, 0, xlim = c(-40, 40), ylim = c(-40, 40), type = "l")
+start.point <- c(0,0)
+for(i in 1:100){
+  start.point.prior <- start.point
+  start.point <- start.point + c(rnorm(1, 0, 2), rnorm(1, 0, 2))
+  lines(c(start.point.prior[1], start.point[1]), c(start.point.prior[2], start.point[2]))
+}
+#so cool
+
+
+
+#15) Run simulation to see how long, on average, until faculty member falls of cliff (approx 5 miles away in all directions)
+#Need scale: Assume person walks 4 mi/h. This means person walks 0.33 miles in 5 min. Thus, set SD = 0.33 for more accurate model
+#Assume 1 on the plot = 1 mile
+#need distance formula:
+
+distance <- ((b[1] - a[1])^2 + (b[2] - a[2])^2)^(1/2)
+#But in this case, a = (0,0), so (b[1]^2 + b[2]^2)^(1/2)
+
+#Could try to use while loop, but risk of it never ending, so choose a massive time scale to make prob of walking 5 mi close enough to 100% to be good enough
+random.walk <- plot(0, 0, xlim = c(-8, 8), ylim = c(-8, 8), type = "l")
+start.point <- c(0,0)
+for(i in 1:10000){
+  start.point.prior <- start.point
+  start.point <- start.point + c(rnorm(1, 0, 0.33), rnorm(1, 0, 0.33))
+  lines(c(start.point.prior[1], start.point[1]), c(start.point.prior[2], start.point[2]))
+}
+#looks pretty good. 
+
+  
+time.to.death <- function(n){
+  timestep.to.death <- numeric(n)
+  time.to.death <- 5 * timestep.to.death
+  start.point <- c(0,0)
+  distance.from.origin <- (start.point[1]^2 + start.point[2]^2)^(1/2)
+  for (j in 1:n){
+    for(i in 1:10000){
+      if (distance.from.origin <= 5){
+        start.point.prior <- start.point
+        start.point <- start.point + c(rnorm(1, 0, 0.33), rnorm(1, 0, 0.33))
+      }
+      if (distance.from.origin > 5){
+        timestep.to.death[j] <- (i-1)
+      }
+    }
+  }
+  print(time.to.death)
+  cat("Average time to death with a sample size of", n, ":")
+  return(mean(time.to.death))
+}

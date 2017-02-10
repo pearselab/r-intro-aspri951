@@ -349,3 +349,178 @@ sequence.split.apply <- function(sequence){
   lapply(sequence, )
 }
   
+
+bases <- c("A", "G", "T", "C")
+codons <- expand.grid(bases, bases, bases)
+rearranged.codons <- codons[c(3, 2, 1)]
+amino.acids <- c("Lys", "Lys", "Asn", "Asn", "Arg", "Arg", "Ser", "Ser", "Ile", "Met", "Ile", "Ile", "Thr", "Thr", "Thr", "Thr", "Glu", "Glu", "Asp", "Asp", "Gly", "Gly", "Gly", "Gly", "Val", "Val", "Val", "Val", "Ala", "Ala", "Ala", "Ala", "stop", "stop", "Tyr", "Tyr", "stop", "Trp", "Cys", "Cys", "Leu", "Leu", "Phe", "Phe", "Ser", "Ser", "Ser", "Ser", "Gln", "Gln", "His", "His", "Arg", "Arg", "Arg", "Arg", "Leu", "Leu", "Leu", "Leu", "Pro", "Pro", "Pro", "Pro")
+DNA.translation.lookup.table <- cbind(rearranged.codons, amino.acids)
+
+#Goal: merge first 3 columns of DNA translation lookup table:
+DNA.translation.lookup.table[,4] <- paste(DNA.translation.lookup.table[,1], DNA.translation.lookup.table[,2], DNA.translation.lookup.table[,3], collapse = "")
+DNA.translation.lookup.table[,5] <- sapply(DNA.translation.lookup.table, paste(DNA.translation.lookup.table[,1], DNA.translation.lookup.table[,2], DNA.translation.lookup.table[,3], collapse = ""))
+#apply function not working
+
+
+merged.codons <- character(nrow(DNA.translation.lookup.table))
+
+for(i in 1:nrow(DNA.translation.lookup.table)){
+  merged.codons[i] <- paste(DNA.translation.lookup.table[i, 1], DNA.translation.lookup.table[i, 2], DNA.translation.lookup.table[i, 3], collapse = "")
+}
+
+#Good. Now need to remove space. 
+#sub or gsub? Take (pattern, replacement, x)
+#sub only replaces first instance, gsub replaces all
+
+merged.codons.final <- gsub(" ", "", merged.codons)
+
+DNA.translation.lookup.table[,5] <- merged.codons.final
+
+#Second, split string into character vector with nchar == 3 for each element
+#Stack overflow code: http://stackoverflow.com/questions/11619616/how-to-split-a-string-into-substrings-of-a-given-length
+
+text <- "aabbccccdd"
+substring(text, seq(1, nchar(text)-1, 2), seq(2, nchar(text), 2))
+#Test for 3 instead of two, just guessing:
+
+test.DNA <- "elfjweifjwilefjwel"
+substring(test.DNA, seq(1, nchar(text)-2, 3), seq(2, nchar(text)-1, 3), seq(3, nchar(text), 3))
+#nope. Test two:
+
+test.DNA <- "elfjweifjwilefjwel"
+substring(test.DNA, seq(1, nchar(text)-2, 3), seq(3, nchar(text), 3))
+#seq = function taking (from, to, by)
+#substring(x, start, stop)
+#Not working. New strategy:
+
+
+single.nucleotides <- unlist(strsplit(test.DNA, ""))
+first.nuc.seq <- seq(1, length(single.nucleotides), by = 3)
+second.nuc.seq <- first.nuc.seq + 1
+third.nuc.seq <- first.nuc.seq + 2
+first.nucleotide <- single.nucleotides[first.nuc.seq]
+second.nucleotide <- single.nucleotides[second.nuc.seq]
+third.nucleotide <- single.nucleotides[third.nuc.seq]
+codons <- character(length(first.nuc.seq))
+for(i in 1:length(first.nuc.seq)){
+  codons[i] <- paste(first.nucleotide[i], second.nucleotide[i], third.nucleotide[i], collapse = "")
+}
+codons.final <- gsub(" ", "", codons)
+return(codons)
+#Works! Wrap in function
+
+DNA.codons <- function(DNA.seq){
+  single.nucleotides <- unlist(strsplit(DNA.seq, ""))
+  if((length(single.nucleotides) %% 3) != 0){
+    stop("DNA sequence must have a length that is a multiple of three!")
+  }
+  first.nuc.seq <- seq(1, length(single.nucleotides), by = 3)
+  second.nuc.seq <- first.nuc.seq + 1
+  third.nuc.seq <- first.nuc.seq + 2
+  first.nucleotide <- single.nucleotides[first.nuc.seq]
+  second.nucleotide <- single.nucleotides[second.nuc.seq]
+  third.nucleotide <- single.nucleotides[third.nuc.seq]
+  codons <- character(length(first.nuc.seq))
+  for(i in 1:length(first.nuc.seq)){
+    codons[i] <- paste(first.nucleotide[i], second.nucleotide[i], third.nucleotide[i], collapse = "")
+  }
+  codons.final <- gsub(" ", "", codons)
+  return(codons.final)
+}
+
+DNA.real.test <- "GATTTCCCCAAACTGAAGCTA"
+
+#Translate into amino acids: 
+
+DNA.real.test <- "GATTTCCCCAAACTGAAGCTA"
+
+aa.sequence <- character(length(codons.final))
+for(i in 1: length(codons.final)){
+  aa.sequence[i] <- DNA.translation.lookup.table[which(DNA.translation.lookup.table$amino.acids == codons.final[i]), 4]
+}
+#Nah.
+
+protein <- character(length(codons.final))
+for(j in 1:length(codons.final)){
+  for(i in 1:nrow(DNA.translation.lookup.table)){
+    if(DNA.translation.lookup.table[i, 5] == codons.final[j]){
+      protein[j] <- DNA.translation.lookup.table[i, 4]
+    }
+  }
+  (protein)
+}
+
+
+codon <- unlist(DNA.translation.lookup.table[5])
+names(codon) <-  unlist(DNA.translation.lookup.table[4])
+protein <- character(length(codons.final))
+for(i in 1: length(codons.final)){
+  if()
+  protein[i] <- names(codon[which(protein[i] == codon[i])])
+}
+ 
+DNA.codons <- function(DNA.seq){
+  single.nucleotides <- unlist(strsplit(DNA.seq, ""))
+  if((length(single.nucleotides) %% 3) != 0){
+    stop("DNA sequence must have a length that is a multiple of three!")
+  }
+  first.nuc.seq <- seq(1, length(single.nucleotides), by = 3)
+  second.nuc.seq <- first.nuc.seq + 1
+  third.nuc.seq <- first.nuc.seq + 2
+  first.nucleotide <- single.nucleotides[first.nuc.seq]
+  second.nucleotide <- single.nucleotides[second.nuc.seq]
+  third.nucleotide <- single.nucleotides[third.nuc.seq]
+  codons <- character(length(first.nuc.seq))
+  for(i in 1:length(first.nuc.seq)){
+    codons[i] <- paste(first.nucleotide[i], second.nucleotide[i], third.nucleotide[i], collapse = "")
+  }
+  codons.final <- gsub(" ", "", codons)
+  codon.ref <- unlist(DNA.translation.lookup.table[5])
+  names(codon.ref) <-  unlist(DNA.translation.lookup.table[4])
+  protein <- character(length(codons.final))
+  for(i in 1:length(codons.final)){
+    protein[i] <- names(codon.ref[match(codons.final[i], codon.ref)])
+  }
+  return(protein)
+}
+
+#Test:
+DNA.real.test <- "GATTTCCCCAAACTGAAGCTA"
+> DNA.codons(DNA.real.test)
+
+
+ 
+
+#Using which() to find stuff test:
+test.one <- c(4, 6, 8, 3, 5)
+test.two <- c(5, 6, 5, 3, 7)
+which(test.one == test.two)
+#[1] 2 4
+#returns index. excellent.
+
+
+
+#6) modify function to take multiple DNA sequences
+
+translate.many.DNA.seq <- function(DNA.seq.1, DNA.seq.2, ...){
+  DNA.list <- list(DNA.seq.1, DNA.seq.2, ...)
+  translated.seqs <- sapply(DNA.list, translate.DNA.seq)
+  return(translated.seqs)
+}
+
+DNA.seq.overlap <- function(DNA.seq.1, DNA.seq.2, ...){
+  translated.seqs <- mapply(DNA.seq.1, DNA.seq.2, ..., DNA.translate)
+}
+
+
+DNA.seq.overlap <- function(DNA.seq.1, DNA.seq.2, ...){
+  DNA.list <- list(DNA.seq.1, DNA.seq.2, ...)
+  translated.seqs <- sapply(DNA.list, DNA.translate)
+  for(i in 1:(length(DNA.seq.1)-1)){
+    match <- which(DNA.list[[i]] == DNA.list[[i+1]])
+  }
+}
+
+
+
+#7) 

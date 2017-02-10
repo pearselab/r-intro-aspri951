@@ -331,13 +331,342 @@ new.polygon <- function(first.point, second.point, ...){
   return(polygon)
 }
 
+#New test:
+new.polygon <- function(first.point, second.point, ...){
+  check.class <- list(first.point, second.point, ...)
+  if(any(sapply(check.class, class)) != "point"){
+    stop("At least one object is not a point.")
+  }
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+
+#Test:
+new.polygon <- function(first.point, second.point, ...){
+  check.class <- list(first.point, second.point, ...)
+  class.vector <- sapply(check.class, class)
+  print(class.vector)
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+#definitely working: returns a vector of length three that says "point" "point" "point"
+
+new.polygon <- function(first.point, second.point, ...){
+  check.class <- list(first.point, second.point, ...)
+  class.vector <- sapply(check.class, class)
+  print(class.vector)
+  print(class(class.vector))
+  print(class.vector[1])
+  print(length(class.vector))
+  if(any((class.vector) != "point")){
+    stop("At least one object is not a point.")
+  }
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+}
+
+#Test: test <- c(4, 4, 4, 6)
+if(any(test) != 4){print("problem")}
+#works
+new.polygon(point.a, point.b, point.c)
+#Was parentheses problem with "any" ...ugh.
+
+new.polygon <- function(first.point, second.point, ...){
+  check.class <- list(first.point, second.point, ...)
+  class.vector <- sapply(check.class, class)
+  if(any((class.vector) != "point")){
+    stop("At least one object is not a point.")
+  }
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+#Yessssss! Simplify:
+
+new.polygon <- function(first.point, second.point, ...){
+  polygon <- list(first.point, second.point, ..., first.point)
+  class.check <- sapply(polygon, class)
+  if(any((class.check) != "point")){
+    stop("At least one object is not a point.")
+  } else {
+    class(polygon) <- "polygon"
+    return(polygon)
+  }
+}
 
 
 
-#6
-#7
-#8
+#6) Write plot methods for point and line objects
+
+#To access parts of line object, will need to find parts of list
+#list is same as data frame, so just need row, col, where row = which vector down you're looking for, and col = position of element in vector
+#or so to speak
+#alas, for this is false
+#no good way to access elements of list
+#therefore, unlist!
+
+#plotting line object:
+  
+plot.line <- function(line){
+  if(!inherits(line, "line")){
+    stop("Object must be of class line!")
+  } else {
+    first.point <- line[1]
+    second.point <- line[2]
+    x.coordinates <- c(first.point[1], second.point[1])
+    print(x.coordinates)
+    y.coordinates <- c(first.point [2], second.point[2])
+    plot(x.coordinates, y.coordinates, type = "l")
+  }
+}  
+#Nope. Test:
+
+plot.line <- function(line){
+  if(!inherits(line, "line")){
+    stop("Object must be of class line!")
+  } else {
+    first.point <- line[1]
+    print(first.point[1])
+    second.point <- line[2]
+    x.coordinates <- c(first.point[1], second.point[1])
+    y.coordinates <- c(first.point [2], second.point[2])
+  }
+}  
+#not splitting up the point class into a non-list? Try unlist?
+
+plot.line <- function(line){
+  if(!inherits(line, "line")){
+    stop("Object must be of class line!")
+  } else {
+    first.point <- unlist(line[1])
+    print(first.point[1])
+    second.point <- unlist(line[2])
+    x.coordinates <- c(first.point[1], second.point[1])
+    y.coordinates <- c(first.point [2], second.point[2])
+  }
+}
+#better
+
+plot.line <- function(line){
+  if(!inherits(line, "line")){
+    stop("Object must be of class 'line'!")
+  } else {
+    first.point <- unlist(line[1])
+    second.point <- unlist(line[2])
+    x.coordinates <- c(first.point[1], second.point[1])
+    y.coordinates <- c(first.point[2], second.point[2])
+    plot(x.coordinates, y.coordinates, type = "l")
+  }
+}
+#Done.
+
+plot.point <- function(point){
+  if(!inherits(point, "point")){
+    stop("Object must be of class 'point'!")
+  } else {
+    plot(point[1], point[2])
+  }
+}
+#Also done.
+
+
+
+#7 Plot methods for polygon objects
+
+plot.polygon <- function(polygon){
+  if(!inherits(polygon, "polygon")){
+    stop("Object must be of class 'polygon'!")
+  } else {
+    x.coordinates <- numeric(length(polygon))
+    y.coordinates <- numeric(length(polygon))
+    for(i in 1:length(polygon)){
+      point <- unlist(polygon[i])
+      x.coordinates[i] <- point[1]
+      y.coordinates[i] <- point[2]
+    }
+    plot(x.coordinates, y.coordinates, type = "l")
+  }
+}
+#Oh yeah.
+
+#mock-up, incomplete polygon class to work with:
+new.polygon <- function(first.point, second.point, ...){
+  polygon <- list(first.point, second.point, ..., first.point)
+  class(polygon) <- "polygon"
+  return(polygon)
+}
+
+
+#8) create a canvas object that the "add" function can add point, line, circle, and polygon objects to. 
+#Create plot and print methods for this class.
+
+#Test:
+test.vector <- c("point", "circle", "circle", "polygon", "line", "point")
+if(any((test.vector) != "point" | (test.vector) != "circle" | (test.vector) != "line" | (test.vector) != "polygon" )){print("NOooo")}
+#Okay. This doesn't check what I want it to.  Try the opposite in a for-loop? With an unexecuted filler function?
+
+for(i in 1:length(test.vector)){
+  if((test.vector[i]) != "point" | 
+     (test.vector[i]) != "circle" | 
+     (test.vector[i]) != "line" | 
+     (test.vector[i]) != "polygon" ){
+    stop("All canvas objects must be of class point, line, circle, or polygon!")
+  }
+}
+#Hmm, still doesn't work. Guess: gets to "doesn't equal circle" and says "oh no! Not a circle!" and breaks loop.
+#How about a nested if-statement?
+
+for(i in 1:length(test.vector)){
+  if(test.vector[i] != "point"){
+    if(test.vector[i] != "circle"){
+      if(test.vector[i] != "line"){
+        if(test.vector[i] != "polygon"){
+          stop("All canvas objects must be of class point, line, circle, or polygon!")
+        }
+      }
+    }
+  } 
+}
+#Yes indeed.
+
+
+new.canvas <- function(point, line, circle, polygon, ...){
+  canvas <- list(point, line, circle, polygon, ...)
+  class.check <- sapply(canvas, class)
+  for(i in 1:length(class.check)){
+    if(class.check[i] != "point"){
+      if(class.check[i] != "circle"){
+        if(class.check[i] != "line"){
+          if(class.check[i] != "polygon"){
+            stop("All canvas objects must be of class point, line, circle, or polygon!")
+          }
+        }
+      }
+    } 
+  }
+  class(canvas) <- "canvas"
+  return(canvas)
+}
+#Dones.
+
+#"Add" function:
+
+add.to.canvas <- function(canvas, new.object, ...){
+  new.objects <- list(new.object, ...)
+  class.check <- sapply(canvas, class)
+  for(i in 1:length(class.check)){
+    if(class.check[i] != "point"){
+      if(class.check[i] != "circle"){
+        if(class.check[i] != "line"){
+          if(class.check[i] != "polygon"){
+            stop("All canvas objects must be of class point, line, circle, or polygon!")
+          }
+        }
+      }
+    } 
+  }
+  canvas <- list(unlist(canvas), new.object, ...)
+  return(canvas)
+}
+
+
+add.to.canvas <- function(canvas, new.object, ...){
+  new.objects <- list(new.object, ...)
+  class.check <- sapply(canvas, class)
+  for(i in 1:length(class.check)){
+    if(class.check[i] != "point"){
+      if(class.check[i] != "circle"){
+        if(class.check[i] != "line"){
+          if(class.check[i] != "polygon"){
+            stop("All canvas objects must be of class point, line, circle, or polygon!")
+          }
+        }
+      }
+    } 
+  }
+  for (i in 1:length(new.objects)){
+    canvas[length(canvas) + i] <- new.objects[i]
+    return(canvas) 
+  }
+}
+
+
+
+point.a <- new.point(3,4)
+point.b <- new.point(10,10)
+point.c <- new.point(0,0)
+point.d <- new.point(-1, 4)
+circle.test <- new.circle(point.a, 5)
+polygon.a <- new.polygon(point.a, point.b, point.c)
+new.canvas(point.a, circle.test, polygon.a)
+
+#Test:
+class(test.canvas)
+#[1] "canvas"
+class(test.canvas[[3]])
+#[1] "circle"
+#excellent. can call parts of list and get class from them, sort of. 
+
+plot.canvas <- function(canvas){
+  plot(c(0, 0, 15, 15, 0), c(0, 15, 15, 0, 0), type = "l", asp = 1)
+  for(i in 1:length(canvas)){
+    if(class(canvas[[i]]) == "point"){
+       point <- canvas[[i]]
+       points(point[1], point[2])
+    } else if(class(canvas[[i]]) == "circle"){
+      circle <- canvas[[i]]
+      point <- unlist(circle[1])
+      radius <- unlist(circle[2])
+      pos.x.coordinates = seq((point[1] - radius), (point[1] + radius), by = 0.1)
+      neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = -0.1)
+      total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+      pos.y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+      neg.y.coordinates = c(point[2] - (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+      total.y.coordinates = c(pos.y.coordinates, neg.y.coordinates)
+      lines(total.x.coordinates, total.y.coordinates)
+    } else if (class(canvas[[i]]) == "polygon"){
+      x.coordinates <- numeric(length(polygon))
+      y.coordinates <- numeric(length(polygon))
+      for(i in 1:length(polygon)){
+        point <- unlist(polygon[i])
+        x.coordinates[i] <- point[1]
+        y.coordinates[i] <- point[2]
+      }
+      lines(x.coordinates, y.coordinates)
+    } else if(class(canvas[[i]]) == "line"){
+      line <- canvas[[i]]
+      first.point <- unlist(line[1])
+      second.point <- unlist(line[2])
+      x.coordinates <- c(first.point[1], second.point[1])
+      y.coordinates <- c(first.point[2], second.point[2])
+      lines(x.coordinates, y.coordinates, type = "l")
+    }
+  }
+}
+
+#Now for summary methods.
+
+print.canvas <- function(canvas){
+  if(class(canvas) != "canvas"){
+    stop("Object must be of class 'canvas'!")
+  } else {
+    cat("There are", length(canvas), "objects on this canvas.", "\n")
+    for(i in 1:length(canvas)){
+      cat("Object", paste("#", i, collapse = ""), "is a", paste(class(canvas[[i]]), ".", collapse = ""), "\n")
+    }
+  }
+}
+
+
+
 #9) circle object: take point and radius, store circle
+
+new.circle <-  function(point, radius){
+  circle <- list(point, radius)
+  return(circle)
+}
 
 #eqn circle = k + or - sqrt(r^2 - (x-h)^2) where point = (h, k), so h = point[1], k = point[2]
 
@@ -443,6 +772,37 @@ plot.circle <- function(point, radius){
 }
 #score. 
 
+new.circle <-  function(point, radius){
+  if(!inherits(point, "point")){
+    stop("Point object must be of class 'point'!")
+  } else {
+    circle <- list(point, radius)
+    class(circle) <- "circle"
+    return(circle)
+  }
+}
+
+plot.circle <- function(circle){
+  if(!inherits(circle, "circle")){
+    stop("Object must be of class 'circle'!")
+  } else {
+    point <- unlist(circle[1])
+    radius <- unlist(circle[2])
+    pos.x.coordinates = seq((point[1] - radius), (point[1] + radius), by = 0.1)
+    neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = -0.1)
+    total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+    pos.y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+    neg.y.coordinates = c(point[2] - (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+    total.y.coordinates = c(pos.y.coordinates, neg.y.coordinates)
+    plot(total.x.coordinates, total.y.coordinates, type = "l", asp = 1)
+  }
+}
+
+#Test: 
+point.a <- new.point(3,4)
+circle.test <- new.circle(point.a, 5)
+plot.circle(circle.test)
+#YESSSSS.
 
 
 #10) Write generic area methods for circle & polygon objects
@@ -457,3 +817,42 @@ area.polygon <- function(a, b, ..., n){
   }
 }
   1/2*()
+  
+#13: Color support for canvas
+  
+  plot.canvas <- function(canvas, point.color, line.color, circle.color, polygon.color){
+    plot(c(0, 0, 15, 15, 0), c(0, 15, 15, 0, 0), type = "l", asp = 1)
+    for(i in 1:length(canvas)){
+      if(class(canvas[[i]]) == "point"){
+        point <- canvas[[i]]
+        points(point[1], point[2], col = point.color)
+      } else if(class(canvas[[i]]) == "circle"){
+        circle <- canvas[[i]]
+        point <- unlist(circle[1])
+        radius <- unlist(circle[2])
+        pos.x.coordinates = seq((point[1] - radius), (point[1] + radius), by = 0.1)
+        neg.x.coordinates = seq((point[1] + radius), (point[1] - radius), by = -0.1)
+        total.x.coordinates = c(pos.x.coordinates, neg.x.coordinates)
+        pos.y.coordinates = c(point[2] + (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+        neg.y.coordinates = c(point[2] - (radius^2 - (pos.x.coordinates - point[1])^2)^(1/2))
+        total.y.coordinates = c(pos.y.coordinates, neg.y.coordinates)
+        lines(total.x.coordinates, total.y.coordinates, col = circle.color)
+      } else if (class(canvas[[i]]) == "polygon"){
+        x.coordinates <- numeric(length(polygon))
+        y.coordinates <- numeric(length(polygon))
+        for(i in 1:length(polygon)){
+          point <- unlist(polygon[i])
+          x.coordinates[i] <- point[1]
+          y.coordinates[i] <- point[2]
+        }
+        lines(x.coordinates, y.coordinates, col = polygon.color)
+      } else if(class(canvas[[i]]) == "line"){
+        line <- canvas[[i]]
+        first.point <- unlist(line[1])
+        second.point <- unlist(line[2])
+        x.coordinates <- c(first.point[1], second.point[1])
+        y.coordinates <- c(first.point[2], second.point[2])
+        lines(x.coordinates, y.coordinates, type = "l", col = line.color)
+      }
+    }
+  }
